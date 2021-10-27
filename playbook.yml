@@ -1,0 +1,42 @@
+---
+- hosts: all
+  become: yes
+  vars:
+    common_hostname: test.histudy.jp
+    common_ssh_use_geoip_filter: true 
+    common_ssh_allow_countries:
+      - JP
+      - US
+    common_groups:
+      - name: www-data
+    common_users:
+      - name: akiya
+        password: "{{ 'munenaga'|password_hash('sha512') }}"
+        admin: true
+        groups:
+        - www-data
+        authorized_keys:
+        - "{{ lookup('file', 'akiya_ed25519.pub') }}"
+      - name: circle-ci
+        password: "{{ 'passw0d' |password_hash('sha512') }}"
+        groups:
+        - www-data
+        authorized_keys:
+        - "{{ lookup('file', 'test_server.pub') }}"
+  roles:
+    - role: common
+    - role: nginx
+  tasks:
+    - name: Fix document root permission
+      file:
+        path: /var/www/html
+        state: directory
+        owner: www-data
+        group: www-data
+        mode: a-x,go+wx,u+w,a+rX,g+s
+
+    - name: Adjust ufw for circle CI
+      ufw:
+        rule: allow
+        port: 22
+        proto: tcp
