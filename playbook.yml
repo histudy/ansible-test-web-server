@@ -10,19 +10,8 @@
     common_groups:
       - name: www-data
     common_users:
-      - name: akiya
-        password: "{{ 'munenaga'|password_hash('sha512') }}"
-        admin: true
-        groups:
-        - www-data
-        authorized_keys:
-        - "{{ lookup('file', 'akiya_ed25519.pub') }}"
-      - name: circle-ci
-        password: "{{ 'passw0d' |password_hash('sha512') }}"
-        groups:
-        - www-data
-        authorized_keys:
-        - "{{ lookup('file', 'test_server.pub') }}"
+      "{{ users }}"
+
   roles:
     - role: common
     - role: nginx
