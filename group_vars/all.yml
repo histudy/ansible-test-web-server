@@ -1,13 +1,13 @@
 users:
   - name: akiya
-    password: "{{ 'munenaga' | password_hash('sha512') }}"
+    password: "{{ lookup('csvfile', 'munenaga file=secret/password.csv delimiter=,') | password_hash('sha512') }}"
     admin: true
     groups:
     - www-data
     authorized_keys:
     - "{{ lookup('file', 'akiya_ed25519.pub') }}"
   - name: circle-ci
-    password: "{{ 'passw0d' | password_hash('sha512') }}"
+    password: "{{ lookup('csvfile', 'circle-ci file=secret/password.csv delimiter=,') | password_hash('sha512') }}"
     groups:
     - www-data
     authorized_keys:
