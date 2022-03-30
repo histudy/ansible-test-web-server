@@ -42,11 +42,11 @@
           stapling_verify: true
 
   roles:
-    #- role: common
+    - role: common
     - role: nginx
     - geerlingguy.certbot
 
-  # キャッシュの関係か certbot ロールでのインストールが通らない
+  # certbot ロールでのインストールが通らないため、先に入れておく
   pre_tasks:
     - name: Install snapd
       apt:
